@@ -103,7 +103,7 @@ As this message format is not directly compatible with our `bookings` table, we 
 ClickHouse provides us with a convenient option here: (Incremental) [Materialized Views](https://clickhouse.com/docs/materialized-view/incremental-materialized-view). A Materialized View allows us to select the relevant fields from `bookings_changes` and update the columns depending on the operation (`delete` requires slightly different updates as the other table updates):
 
 ```sql
-	CREATE MATERIALIZED VIEW bookings_mv TO bookings
+CREATE MATERIALIZED VIEW bookings_mv TO bookings
 	(
 	`booking_id` String,
 	`status` String,
