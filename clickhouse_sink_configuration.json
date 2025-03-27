@@ -1,0 +1,17 @@
+{
+    "hostname": "<HOST>",
+    "name": "cdc-clickhouse-SINK",
+    "port": "<HTTP_PORT>",
+    "connector.class": "com.clickhouse.kafka.connect.ClickHouseSinkConnector",
+    "database": "default",
+    "username": "avnadmin",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "password": "<PASSWORD>",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "ssl": "true",
+    "topics": "bookings_changes",
+    "exactlyOnce": "false",
+    "schemas.enable": "false",
+    "security.protocol": "SSL",
+    "value.converter.schemas.enable": "false"
+}
