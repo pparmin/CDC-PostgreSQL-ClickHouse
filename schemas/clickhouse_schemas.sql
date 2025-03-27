@@ -1,4 +1,4 @@
-CREATE TABLE default.bookings 
+CREATE TABLE bookings 
 (
 	`booking_id` String,
 	`status` String,
@@ -36,8 +36,8 @@ CREATE TABLE bookings_changes
 ENGINE = MergeTree 
 ORDER BY tuple()
 
-	CREATE MATERIALIZED VIEW bookings_mv TO bookings
-	(
+CREATE MATERIALIZED VIEW bookings_mv TO bookings
+(
 	`booking_id` String,
 	`status` String,
 	`is_deleted` UInt8,
