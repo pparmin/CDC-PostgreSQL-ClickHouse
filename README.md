@@ -284,18 +284,32 @@ The setup of our ClickHouse Sink connector is straightforward now:
 
 Good news! We're now ready to test the CDC workflow. 
 
-## Testing the CDC 
-
-### Inserts
-
-### Updates
+## Inserts
 ```sql
-UPDATE bookings SET status = 'In Progress' WHERE status = 'Delayed';
+INSERT INTO bookings (booking_id, status, is_deleted, is_canceled) VALUES 
+('b11', 'New', 'False', 'False'),
+('b12', 'New', 'False', 'False'),
+('b13', 'New', 'False', 'False');
 ```
 
-> *Note: we are using the FINAL operator in ClickHouse for query time deduplication. Otherwise we would have to run an OPTIMIZE TABLE <table_name> DEDUPLICATE statement before to make sure that all data parts are properly merged and no duplicates are in the table.*
+## Updates
+```sql
+UPDATE bookings SET status = 'In Progress', modified_at = (SELECT CURRENT_TIMESTAMP) WHERE status = 'Delayed' OR status = 'New';
+```
+
+```sql
+UPDATE bookings SET status = 'Closed', modified_at = (SELECT CURRENT_TIMESTAMP) WHERE status = 'In Progress';
+```
+
+## Deletes
+```sql
+DELETE FROM bookings WHERE status = 'Closed';
+```
+
 
 #### Identical Entries
+> *Note: we are using the FINAL operator in ClickHouse for query time deduplication. Otherwise we would have to run an OPTIMIZE TABLE <table_name> DEDUPLICATE statement before to make sure that all data parts are properly merged and no duplicates are in the table.*
+
 
 ```sql
 -- Postgres 
@@ -314,5 +328,3 @@ SELECT count(*) FROM bookings;
 -- ClickHouse
 SELECT count() FROM bookings FINAL
 ```
-
-## Deletes
