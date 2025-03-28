@@ -19,15 +19,15 @@ CREATE TABLE bookings_changes
 	`before.status` String,
 	`before.is_deleted` UInt8,
 	`before.is_canceled` Bool,
-	`before.created_at` DateTime('UTC'),
-	`before.modified_at` DateTime('UTC'),
+	`before.created_at` Int64,
+	`before.modified_at` Int64,
 	`after.id` UInt64,
 	`after.booking_id` String,
 	`after.status` String,
 	`after.is_deleted` UInt8,
 	`after.is_canceled` Bool,
-	`after.created_at` DateTime('UTC'),
-	`after.modified_at` DateTime('UTC'),
+	`after.created_at` Int64,
+	`after.modified_at` Int64,
 	`op` LowCardinality(String), 
 	`ts_ms` UInt64, 
 	`source.sequence` String, 
@@ -37,13 +37,13 @@ ENGINE = MergeTree
 ORDER BY tuple()
 
 CREATE MATERIALIZED VIEW bookings_mv TO bookings
-(
+	(
 	`booking_id` String,
 	`status` String,
 	`is_deleted` UInt8,
 	`is_canceled` Bool,
-	`created_at` DateTime,
-	`modified_at` DateTime,
+	`created_at` DateTime64,
+	`modified_at` DateTime64,
 	`version` UInt64
 	) AS 
 	SELECT 
@@ -51,8 +51,8 @@ CREATE MATERIALIZED VIEW bookings_mv TO bookings
 		if(op = 'd', before.status, after.status) AS status, 
 		if(op = 'd', 1, 0) AS is_deleted, 
 		if(op = 'd', before.is_canceled, after.is_canceled) AS is_canceled, 
-		if(op = 'd', before.created_at, after.created_at) AS created_at,
-		if(op = 'd', before.modified_at, after.modified_at) AS modified_at,
+		if(op = 'd', fromUnixTimestamp64Micro(before.created_at), fromUnixTimestamp64Micro(after.created_at)) AS created_at, 
+		if(op = 'd', fromUnixTimestamp64Micro(before.modified_at), fromUnixTimestamp64Micro(after.modified_at)) AS modified_at, 
 		if(op = 'd', source.lsn, source.lsn) AS version
 	FROM default.bookings_changes
 	WHERE (op = 'c') OR (op = 'r') OR (op = 'u') OR (op = 'd')
