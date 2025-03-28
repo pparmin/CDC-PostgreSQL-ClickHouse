@@ -1,6 +1,7 @@
 # CDC-PostgreSQL-ClickHouse
 
-Below you find a full description of the setup including further information on the decisions. All individual elements can also be found in their respective folders.
+Below you find a full CDC setup between PostgreSQL & ClickHouse, using Kafka Connect as a middle man. The setup is fully built on the Aiven platform.
+
 ## Database setup
 
 ### Prerequisite
