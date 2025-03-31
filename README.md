@@ -66,8 +66,6 @@ In order to enable a full flow from PostgreSQL --> Debezium (Kafka Connect) --> 
 
 First, we create a `bookings_changes` table. This is the table to which the ClickHouse Sink connector will send the data. Debezium sends the data in a nested JSON format. Since we have set `REPLICA IDENTITY` to `full`, we will receive both the `before` & `after` values of the changed rows. 
 
-----INSERT MESSAGE HERE---
-
 As you can see in the schema, we directly replicate the `JSON` format: 
 ```sql
 CREATE TABLE bookings_changes
